@@ -25,6 +25,7 @@
     "dotenv": "^16.0.1",
     "joi": "^17.6.0",
     "mysql": "^2.18.1",
+    "mysql-migrations": "^1.0.7",
     "nanoid": "^4.0.0"
   },
   "devDependencies": {
