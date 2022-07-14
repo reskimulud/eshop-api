@@ -1,8 +1,10 @@
-class PoolMySql {
-  #pool;
+require('dotenv').config();
+const mysql = require('mysql');
+
+class Database {
 
   constructor() {
-    this.#pool = mysql.createPool({
+    this.connection = mysql.createPool({
       connectionLimit: 10,
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
@@ -13,7 +15,7 @@ class PoolMySql {
 
   query(query) {
     return new Promise((resolve, reject) => {
-      this.#pool.query(query, (err, result) => {
+      this.connection.query(query, (err, result) => {
         if (err) {
           reject(err);
         }
@@ -24,4 +26,4 @@ class PoolMySql {
   }
 }
 
-module.exports = PoolMySql;
+module.exports = Database;

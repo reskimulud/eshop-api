@@ -20,7 +20,7 @@ const init = async () => {
     handler: () => ({
       name: 'Rski Mulud Muchamad',
     }),
-  })
+  });
 
   await server.start();
   console.log(`Server running at ${server.info.uri}`);
