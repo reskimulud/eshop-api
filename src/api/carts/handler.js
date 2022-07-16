@@ -7,12 +7,14 @@ class CartsHandler {
     this.#validator = validator;
 
     this.postCart = this.postCart.bind(this);
-    this.getCartByUserId = this.getCartByUserId.bind(this)
+    this.getCartByUserId = this.getCartByUserId.bind(this);
+    this.putCartByItemId = this.putCartByItemId.bind(this);
+    this.deleteCartByItemId = this.deleteCartByItemId.bind(this);
   }
 
   async postCart(request, h) {
     this.#validator.validateCartsPayload(request.payload);
-    const { userId } = request.params;
+    const { id: userId } = request.auth.credentials;
     const { productId, quantity } = request.payload;
 
     await this.#service.addCart(userId, productId, quantity);
@@ -26,7 +28,8 @@ class CartsHandler {
   }
 
   async getCartByUserId(request, h) {
-    const { userId } = request.params;
+    console.log(request.auth);
+    const { id: userId } = request.auth.credentials;
 
     const cart = await this.#service.getCartByUserId(userId);
     let subTotal = 0;
@@ -46,6 +49,33 @@ class CartsHandler {
         subTotal,
         cart,
       },
+    };
+  }
+
+  async putCartByItemId(request, h) {
+    const { id: userId } = request.auth.credentials;
+    const { itemId } = request.params;
+
+    this.#validator.validateCartsQuery(request.query);
+    const { qty } = request.query;
+
+    await this.#service.updateCartByItemId(userId, itemId, qty);
+
+    return {
+      status: 'success',
+      message: 'Item dalam keranjang berhasil diperbarui',
+    };
+  }
+
+  async deleteCartByItemId(request, h) {
+    const { id: userId } = request.auth.credentials;
+    const { itemId } = request.params;
+
+    await this.#service.deleteCartByItemId(userId, itemId);
+
+    return {
+      status: 'success',
+      message: 'Item dalam keranjang berhasil dihapus',
     };
   }
 }

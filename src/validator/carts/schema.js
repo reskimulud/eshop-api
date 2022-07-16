@@ -5,4 +5,8 @@ const CartsPayloadSchema = Joi.object({
   quantity: Joi.number().min(1).required(),
 });
 
-module.exports = { CartsPayloadSchema };
+const CartsQuerySchema = Joi.object({
+  qty: Joi.number().min(1).required(),
+});
+
+module.exports = { CartsPayloadSchema, CartsQuerySchema };

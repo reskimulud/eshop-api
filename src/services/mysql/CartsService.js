@@ -1,12 +1,31 @@
 const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
+const AuthorizationError = require('../../exceptions/AuthorizationError');
 
 class CartsService {
   #database;
 
   constructor(database) {
     this.#database = database;
+  }
+
+  async #verifyCartOwner(userId, itemId) {
+    const queryItem = `SELECT id FROM carts WHERE id = '${itemId}'`;
+
+    const item = await this.#database.query(queryItem);
+
+    if (!item || item.length < 1 || item.affectedRows < 1) {
+      throw new NotFoundError('Item tidak ditemukan');
+    }
+
+    const query = `SELECT id FROM carts WHERE userId = '${userId}' AND id = '${itemId}'`;
+
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1 || result.affectedRows < 1) {
+      throw new AuthorizationError('Anda tidak dapat mengubah ini');
+    }
   }
 
   async addCart(userId, productId, quantity) {
@@ -57,6 +76,33 @@ class CartsService {
     const result = await this.#database.query(query);
 
     return result;
+  }
+
+  async updateCartByItemId(userId, itemId, qty) {
+    await this.#verifyCartOwner(userId, itemId);
+
+    const query = `UPDATE carts SET 
+        quantity = ${qty}
+      WHERE id = '${itemId}' AND userId = '${userId}'
+    `;
+
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1 || result.affectedRows < 1) {
+      throw new InvariantError('Gagal memperbarui item di keranjang');
+    }
+  }
+
+  async deleteCartByItemId(userId, itemId) {
+    await this.#verifyCartOwner(userId, itemId);
+
+    const query = `DELETE FROM carts WHERE id = '${itemId}' AND userId = '${userId}'`;
+
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1 || result.affectedRows < 1) {
+      throw new InvariantError('Gagal menghapus item di keranjang');
+    }
   }
 }
 
