@@ -3,6 +3,7 @@ require('dotenv').config();
 const Hapi = require('@hapi/hapi');
 const Database = require('./conf/Database');
 const ClientError = require('./exceptions/ClientError');
+const Jwt = require('@hapi/jwt');
 
 // authentication
 const authentication = require('./api/authentication');
@@ -38,6 +39,30 @@ const init = async () => {
     }),
   });
 
+  // register external plugin
+  await server.register([
+    {
+      plugin: Jwt,
+    },
+  ]);
+
+  // defines authentication strategy
+  server.auth.strategy('eshop_jwt', 'jwt',{
+    keys: process.env.TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
+  });
+
+  //  register internal plugin
   await server.register([
     {
       plugin: authentication,
