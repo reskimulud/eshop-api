@@ -20,12 +20,17 @@ const carts = require('./api/carts');
 const CartsService = require('./services/mysql/CartsService');
 const CartsValidator = require('./validator/carts');
 
+// transactions
+const transactions = require('./api/transactions');
+const TransactionsService = require('./services/mysql/TransactionsService');
+
 const init = async () => {
 
   const database = new Database()
   const authenticationService = new AuthenticationService(database);
   const productsService = new ProductsService(database);
   const cartsService = new CartsService(database);
+  const transactionsService = new TransactionsService(database);
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -89,6 +94,12 @@ const init = async () => {
       options: {
         service: cartsService,
         validator: CartsValidator,
+      },
+    },
+    {
+      plugin: transactions,
+      options: {
+        service: transactionsService,
       },
     },
   ]);
