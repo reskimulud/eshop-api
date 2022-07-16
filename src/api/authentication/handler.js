@@ -1,3 +1,5 @@
+const Jwt = require('@hapi/jwt');
+
 class AuthenticationHandler {
   #service;
   #validator;
@@ -8,6 +10,10 @@ class AuthenticationHandler {
 
     this.postRegister = this.postRegister.bind(this);
     this.postLogin = this.postLogin.bind(this);
+  }
+
+  #generateToken(payload) {
+    return Jwt.token.generate(payload, process.env.TOKEN_KEY)
   }
 
   async postRegister(request, h) {
@@ -33,11 +39,15 @@ class AuthenticationHandler {
 
     const id = await this.#service.login(email, password)
 
+    const payloadToken = { id, email };
+    const token = this.#generateToken(payloadToken)
+
     return {
       status: 'success',
       message: 'User berhasil login',
       data: {
         id,
+        token,
       },
     };
   }
