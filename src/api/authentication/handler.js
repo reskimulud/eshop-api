@@ -37,9 +37,9 @@ class AuthenticationHandler {
     this.#validator.validateLoginPayload(request.payload);
     const { email, password } = request.payload;
 
-    const id = await this.#service.login(email, password)
+    const { id, role } = await this.#service.login(email, password)
 
-    const payloadToken = { id, email };
+    const payloadToken = { id, email, role };
     const token = this.#generateToken(payloadToken)
 
     return {

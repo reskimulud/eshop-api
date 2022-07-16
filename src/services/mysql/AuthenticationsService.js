@@ -41,7 +41,7 @@ class AuthenticationService {
   }
 
   async login(email, password) {
-    const query = `SELECT id, email, password FROM users WHERE email = '${email}'`;
+    const query = `SELECT id, email, password, role FROM users WHERE email = '${email}'`;
 
     const result = await this.#database.query(query);
 
@@ -49,7 +49,7 @@ class AuthenticationService {
       throw new AuthenticationError('User tidak ditemukan');
     }
 
-    const { id, password: hashedPassword } = result[0];
+    const { id, password: hashedPassword, role } = result[0];
 
     const isValid = await bcrypt.compare(password, hashedPassword);
 
@@ -57,7 +57,7 @@ class AuthenticationService {
       throw new AuthenticationError('User tidak ditemukan');
     }
 
-    return id;
+    return { id, role };
   }
 }
 
