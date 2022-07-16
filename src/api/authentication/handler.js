@@ -17,7 +17,7 @@ class AuthenticationHandler {
   }
 
   async postRegister(request, h) {
-    await this.#validator.validateRegisterPayload(request.payload);
+    this.#validator.validateRegisterPayload(request.payload);
     const { email, name, password } = request.payload;
 
     const id = await this.#service.register(email, name, password);
@@ -34,7 +34,7 @@ class AuthenticationHandler {
   }
 
   async postLogin(request, h) {
-    await this.#validator.validateLoginPayload(request.payload);
+    this.#validator.validateLoginPayload(request.payload);
     const { email, password } = request.payload;
 
     const id = await this.#service.login(email, password)
