@@ -5,6 +5,7 @@ const Database = require('./conf/Database');
 const ClientError = require('./exceptions/ClientError');
 const Jwt = require('@hapi/jwt');
 const path = require('path');
+const Inert = require('@hapi/inert');
 
 // authentication
 const authentication = require('./api/authentication');
@@ -59,6 +60,9 @@ const init = async () => {
   await server.register([
     {
       plugin: Jwt,
+    },
+    {
+      plugin: Inert,
     },
   ]);
 

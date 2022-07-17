@@ -9,6 +9,16 @@ class ProductsService {
     this.#database = database;
   }
 
+  #imageUrlGenerator(filename) {
+    const host = process.env.HOST;
+    const port = process.env.PORT;
+    if (port == 443) {
+      return `https://${host}/products/image/${filename}`;
+    } else {
+      return `http://${host}:${port}/products/image/${filename}`;
+    }
+  }
+
   async addProduct(title, price, description) {
     const id = `product-${nanoid(16)}`
     const query = `INSERT INTO products (id, title, price, description, image)
@@ -34,7 +44,15 @@ class ProductsService {
 
     const result = await this.#database.query(query);
 
-    return result;
+    const products = result.map((product) => {
+      if (product.image != null) {
+        product.image = this.#imageUrlGenerator(product.image);
+      }
+
+      return product;
+    });
+
+    return products;
   }
 
   async getProductById(id) {
@@ -46,7 +64,12 @@ class ProductsService {
       throw new NotFoundError('Produk tidak ditemukan');
     }
 
-    return result[0];
+    const product = result[0];
+    if (product.image != null) {
+      product.image = this.#imageUrlGenerator(product.image);
+    }
+
+    return product;
   }
 
   async updateProductById(id, {title, price, description}) {
