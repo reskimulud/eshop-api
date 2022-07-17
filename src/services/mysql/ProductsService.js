@@ -58,7 +58,7 @@ class ProductsService {
   }
 
   async getAllProducts() {
-    const query = 'SELECT id, title, price, image FROM products';
+    const query = 'SELECT * FROM products';
 
     const result = await this.#database.query(query);
 

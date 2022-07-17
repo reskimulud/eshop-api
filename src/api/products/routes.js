@@ -13,17 +13,11 @@ const routes = (handler) => [
     method: 'GET',
     path: '/products',
     handler: handler.getProducts,
-    options: {
-      auth: 'eshop_jwt',
-    },
   },
   {
     method: 'GET',
     path: '/products/{id}',
     handler: handler.getProductById,
-    options: {
-      auth: 'eshop_jwt',
-    },
   },
   {
     method: 'PUT',
