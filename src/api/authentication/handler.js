@@ -10,6 +10,7 @@ class AuthenticationHandler {
 
     this.postRegister = this.postRegister.bind(this);
     this.postLogin = this.postLogin.bind(this);
+    this.putUserRoleById = this.putUserRoleById.bind(this);
   }
 
   #generateToken(payload) {
@@ -49,6 +50,18 @@ class AuthenticationHandler {
         id,
         token,
       },
+    };
+  }
+
+  async putUserRoleById(request, h) {
+    const { id: credentialsId } = request.auth.credentials;
+    const { id } = request.params;
+
+    await this.#service.updateUserRoleById(credentialsId, id);
+
+    return {
+      status: 'success',
+      message: 'Berhasil memperbarui role',
     };
   }
 }

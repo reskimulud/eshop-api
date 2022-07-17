@@ -9,6 +9,14 @@ const routes = (handler) => [
     path: '/login',
     handler: handler.postLogin,
   },
+  {
+    method: 'PUT',
+    path: '/auth/{id}/role',
+    handler: handler.putUserRoleById,
+    options: {
+      auth: 'eshop_jwt',
+    },
+  },
 ];
 
 module.exports = routes;
