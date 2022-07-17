@@ -1,4 +1,5 @@
 const { nanoid } = require('nanoid');
+const AuthorizationError = require('../../exceptions/AuthorizationError');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
@@ -19,7 +20,24 @@ class ProductsService {
     }
   }
 
-  async addProduct(title, price, description) {
+  async #verifyUserRole(userId) {
+    const query = `SELECT role FROM users WHERE id = '${userId}'`;
+
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1 || result.affectedRows < 1) {
+      throw new NotFoundError('User tidak ditemukan');
+    }
+
+    const role = result[0].role;
+
+    if (role !== 'admin') {
+      throw new AuthorizationError('Anda tidak berhak melakukan ini');
+    }
+  }
+
+  async addProduct(userId, title, price, description) {
+    await this.#verifyUserRole(userId);
     const id = `product-${nanoid(16)}`
     const query = `INSERT INTO products (id, title, price, description, image)
       VALUES (
@@ -72,7 +90,8 @@ class ProductsService {
     return product;
   }
 
-  async updateProductById(id, {title, price, description}) {
+  async updateProductById(id, userId, {title, price, description}) {
+    await this.#verifyUserRole(userId);
     const queryProduct = `SELECT id FROM products WHERE id = '${id}'`;
 
     const product = await this.#database.query(queryProduct);
@@ -94,7 +113,8 @@ class ProductsService {
     }
   }
 
-  async deleteProductById(id) {
+  async deleteProductById(id, userId) {
+    await this.#verifyUserRole(userId);
     const query = `DELETE FROM products WHERE id = '${id}'`;
 
     const result = await this.#database.query(query);
