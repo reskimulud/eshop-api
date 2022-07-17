@@ -31,7 +31,7 @@ class TransactionsHandler {
 
     return {
       status: 'success',
-      message: 'Data transaksi berhasil diamil',
+      message: 'Data transaksi berhasil diambil',
       data: {
         transactions,
       },
@@ -52,12 +52,16 @@ class TransactionsHandler {
     });
 
     return {
-      userId,
-      transactionId: id,
-      dateCreated: transaction.dateCreated,
-      totalItem,
-      total,
-      orders,
+      status: 'success',
+      message: 'Data transaksi berhasil diambil',
+      data: {
+        userId,
+        transactionId: id,
+        dateCreated: transaction.dateCreated,
+        totalItem,
+        total,
+        orders,
+      },
     };
   }
 }

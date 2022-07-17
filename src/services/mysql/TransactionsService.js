@@ -23,7 +23,7 @@ class TransactionsService {
 
     const result = await this.#database.query(query);
 
-    if (!transaction || transaction.length < 1 || transaction.affectedRows < 1) {
+    if (!result || result.length < 1 || result.affectedRows < 1) {
       throw new AuthorizationError('Transaksi tidak ditemukan, anda tidak mempunyai hak untuk mengakses ini');
     }
 
