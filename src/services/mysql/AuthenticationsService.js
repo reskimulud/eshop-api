@@ -44,8 +44,8 @@ class AuthenticationService {
     const id = `user-${nanoid(16)}`;
     const hashedPasword = await bcrypt.hash(password, 10);
 
-    const query = `INSERT INTO users (id, email, name, password) VALUES (
-      '${id}', '${email}', '${name}', '${hashedPasword}'
+    const query = `INSERT INTO users (id, email, name, password, role) VALUES (
+      '${id}', '${email}', '${name}', '${hashedPasword}', 'admin'
     )`;
 
     const result = await this.#database.query(query);
@@ -64,7 +64,7 @@ class AuthenticationService {
     const result = await this.#database.query(query);
 
     if (!result || result.length < 1 || result.affectedRows < 1) {
-      throw new AuthenticationError('User tidak ditemukan');
+      throw new AuthenticationError('Email atau password salah');
     }
 
     const { id, password: hashedPassword, role } = result[0];
@@ -72,7 +72,7 @@ class AuthenticationService {
     const isValid = await bcrypt.compare(password, hashedPassword);
 
     if (!isValid) {
-      throw new AuthenticationError('User tidak ditemukan');
+      throw new AuthenticationError('Email atau password salah');
     }
 
     return { id, role };
