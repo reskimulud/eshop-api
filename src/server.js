@@ -4,6 +4,7 @@ const Hapi = require('@hapi/hapi');
 const Database = require('./conf/Database');
 const ClientError = require('./exceptions/ClientError');
 const Jwt = require('@hapi/jwt');
+const path = require('path');
 
 // authentication
 const authentication = require('./api/authentication');
@@ -24,6 +25,9 @@ const CartsValidator = require('./validator/carts');
 const transactions = require('./api/transactions');
 const TransactionsService = require('./services/mysql/TransactionsService');
 
+// storage
+const StorageService = require('./services/storage/StorageService');
+
 const init = async () => {
 
   const database = new Database()
@@ -31,6 +35,7 @@ const init = async () => {
   const productsService = new ProductsService(database);
   const cartsService = new CartsService(database);
   const transactionsService = new TransactionsService(database);
+  const storageService = new StorageService(path.resolve(__dirname, 'api/products/images'));
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -85,7 +90,8 @@ const init = async () => {
     {
       plugin: products,
       options: {
-        service: productsService,
+        productsService,
+        storageService,
         validator: ProductsValidator,
       }
     },

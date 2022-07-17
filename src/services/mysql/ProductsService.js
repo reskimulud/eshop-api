@@ -80,6 +80,30 @@ class ProductsService {
       throw new NotFoundError('Gagal menghapus produk, id tidak ditemukan');
     }
   }
+
+  async updateProductImageById(id, filename) {
+    const oldFileName = await this.#database.query(
+        `SELECT image FROM products WHERE id = '${id}'`,
+    );
+
+    const queryProduct = `SELECT id FROM products WHERE id = '${id}'`;
+
+    const product = await this.#database.query(queryProduct);
+
+    if (!product || product.length < 1 || product.affectedRows < 1) {
+      throw new NotFoundError('Produk tidak ditemukan');
+    }
+
+    const query = `UPDATE products SET image = '${filename}' WHERE id = '${id}'`;
+
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1 || result.affectedRows < 1) {
+      throw new InvariantError('Gambar produk gagal diperbarui');
+    }
+
+    return oldFileName[0].image;
+  }
 }
 
 module.exports = ProductsService;

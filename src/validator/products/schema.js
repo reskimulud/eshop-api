@@ -6,4 +6,14 @@ const ProductsPayloadSchema = Joi.object({
   description: Joi.string().allow('', null),
 });
 
-module.exports = { ProductsPayloadSchema };
+const ProductImageHeaderSchema = Joi.object({
+  'content-type': Joi.string().valid(
+      'image/apng',
+      'image/avif',
+      'image/gif',
+      'image/jpeg',
+      'image/png',
+      'image/webp').required(),
+}).unknown();
+
+module.exports = { ProductsPayloadSchema, ProductImageHeaderSchema };
