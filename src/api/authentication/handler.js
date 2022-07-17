@@ -10,6 +10,7 @@ class AuthenticationHandler {
 
     this.postRegister = this.postRegister.bind(this);
     this.postLogin = this.postLogin.bind(this);
+    this.getUser = this.getUser.bind(this);
     this.putUserRoleById = this.putUserRoleById.bind(this);
   }
 
@@ -49,6 +50,19 @@ class AuthenticationHandler {
       data: {
         id,
         token,
+      },
+    };
+  }
+
+  async getUser(request, h) {
+    const { id: userId } = request.auth.credentials;
+    const user = await this.#service.getUserById(userId);
+
+    return {
+      status: 'success',
+      message: 'Data user berhasil diambil',
+      data: {
+        user,
       },
     };
   }

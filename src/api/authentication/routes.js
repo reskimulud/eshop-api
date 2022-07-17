@@ -10,6 +10,14 @@ const routes = (handler) => [
     handler: handler.postLogin,
   },
   {
+    method: 'GET',
+    path: '/user',
+    handler: handler.getUser,
+    options: {
+      auth: 'eshop_jwt',
+    },
+  },
+  {
     method: 'PUT',
     path: '/auth/{id}/role',
     handler: handler.putUserRoleById,

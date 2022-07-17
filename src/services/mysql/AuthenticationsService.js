@@ -78,6 +78,18 @@ class AuthenticationService {
     return { id, role };
   }
 
+  async getUserById(userId) {
+    const query = `SELECT name, email FROM users WHERE id = '${userId}'`;
+
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1 || result.affectedRows < 1) {
+      throw new NotFoundError('User tidak ditemukan');
+    }
+
+    return result[0];
+  }
+
   async updateUserRoleById(credentialsId, userId) {
     await this.#verifyUserRole(credentialsId);
 
