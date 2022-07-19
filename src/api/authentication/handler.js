@@ -1,3 +1,6 @@
+const { payload } = require('@hapi/hapi/lib/validation');
+const Jwt = require('@hapi/jwt');
+
 class AuthenticationHandler {
   #service;
   #validator;
@@ -9,6 +12,10 @@ class AuthenticationHandler {
     this.postRegister = this.postRegister.bind(this);
     this.postLogin = this.postLogin.bind(this);
     this.getUser = this.getUser.bind(this);
+  }
+
+  #generateToken(payload) {
+    return Jwt.token.generate(payload, process.env.TOKEN_KEY)
   }
 
   async postRegister(request, h) {
@@ -32,19 +39,23 @@ class AuthenticationHandler {
     this.#validator.validateLoginPayload(request.payload);
     const { email, password } = request.payload;
 
-    const { id } = await this.#service.login(email, password)
+    const { id } = await this.#service.login(email, password);
+    
+    const payloadToken = { id, email };
+    const token = this.#generateToken(payloadToken);
 
     return {
       status: 'success',
       message: 'User berhasil login',
       data: {
         id,
+        token,
       },
     };
   }
 
   async getUser(request, h) {
-    const { id } = request.params;
+    const { id } = request.auth.credentials;
     const user = await this.#service.getUserById(id);
 
     return {
