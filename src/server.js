@@ -9,9 +9,15 @@ const ClientError = require('./exceptions/ClientError');
 const AuthenticationService = require('./services/mysql/AuthenticationService');
 const AuthenticationValidator = require('./validator/authentication');
 
+// products
+const products = require('./api/products');
+const ProductsService = require('./services/mysql/ProductsService');
+const ProductsValidator = require('./validator/products');
+
 const init = async () => {
   const database = new Database();
   const authenticationService = new AuthenticationService(database);
+  const productsService = new ProductsService(database);
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -61,6 +67,13 @@ const init = async () => {
       options: {
         service: authenticationService,
         validator: AuthenticationValidator,
+      },
+    },
+    {
+      plugin: products,
+      options: {
+        service: productsService,
+        validator: ProductsValidator,
       },
     },
   ]);

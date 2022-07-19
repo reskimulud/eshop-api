@@ -10,7 +10,7 @@ class ProductsService {
     this.#database = database;
   }
 
-  async addProduct(title, price, description) {
+  async addProduct(userId, title, price, description) {
     const id = `product-${nanoid(16)}`
     const query = `INSERT INTO products (id, title, price, description, image)
       VALUES (
@@ -35,15 +35,7 @@ class ProductsService {
 
     const result = await this.#database.query(query);
 
-    const products = result.map((product) => {
-      if (product.image != null) {
-        product.image = this.#imageUrlGenerator(product.image);
-      }
-
-      return product;
-    });
-
-    return products;
+    return result;
   }
 
   async getProductById(id) {
@@ -55,16 +47,10 @@ class ProductsService {
       throw new NotFoundError('Produk tidak ditemukan');
     }
 
-    const product = result[0];
-    if (product.image != null) {
-      product.image = this.#imageUrlGenerator(product.image);
-    }
-
-    return product;
+    return result[0];
   }
 
   async updateProductById(id, userId, {title, price, description}) {
-    await this.#verifyUserRole(userId);
     const queryProduct = `SELECT id FROM products WHERE id = '${id}'`;
 
     const product = await this.#database.query(queryProduct);
@@ -87,7 +73,6 @@ class ProductsService {
   }
 
   async deleteProductById(id, userId) {
-    await this.#verifyUserRole(userId);
     const query = `DELETE FROM products WHERE id = '${id}'`;
 
     const result = await this.#database.query(query);
@@ -96,6 +81,7 @@ class ProductsService {
       throw new NotFoundError('Gagal menghapus produk, id tidak ditemukan');
     }
   }
+
 
 }
 
