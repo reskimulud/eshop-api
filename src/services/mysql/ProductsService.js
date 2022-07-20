@@ -10,16 +10,6 @@ class ProductsService {
     this.#database = database;
   }
 
-  #imageUrlGenerator(filename) {
-    const host = process.env.HOST;
-    const port = process.env.PORT;
-    if (port == 443) {
-      return `https://${host}/products/image/${filename}`;
-    } else {
-      return `http://${host}:${port}/products/image/${filename}`;
-    }
-  }
-
   async #verifyUserRole(userId) {
     const query = `SELECT role FROM users WHERE id = '${userId}'`;
 
@@ -62,15 +52,7 @@ class ProductsService {
 
     const result = await this.#database.query(query);
 
-    const products = result.map((product) => {
-      if (product.image != null) {
-        product.image = this.#imageUrlGenerator(product.image);
-      }
-
-      return product;
-    });
-
-    return products;
+    return result;
   }
 
   async getProductById(id) {
@@ -80,11 +62,6 @@ class ProductsService {
 
     if(!result || result.length < 1 || result.affectedRows < 1) {
       throw new NotFoundError('Produk tidak ditemukan');
-    }
-
-    const product = result[0];
-    if (product.image != null) {
-      product.image = this.#imageUrlGenerator(product.image);
     }
 
     return product;
