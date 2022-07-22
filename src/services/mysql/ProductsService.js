@@ -64,7 +64,7 @@ class ProductsService {
       throw new NotFoundError('Produk tidak ditemukan');
     }
 
-    return product;
+    return result;
   }
 
   async updateProductById(id, userId, {title, price, description}) {
