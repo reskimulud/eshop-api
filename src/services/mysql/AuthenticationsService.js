@@ -45,7 +45,7 @@ class AuthenticationService {
     const hashedPasword = await bcrypt.hash(password, 10);
 
     const query = `INSERT INTO users (id, email, name, password, role) VALUES (
-      '${id}', '${email}', '${name}', '${hashedPasword}', 'admin'
+      '${id}', '${email}', '${name}', '${hashedPasword}', 'user'
     )`;
 
     const result = await this.#database.query(query);

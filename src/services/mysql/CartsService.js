@@ -33,25 +33,38 @@ class CartsService {
     const queryUser = `SELECT id FROM users WHERE id = '${userId}'`;
 
     const user = await this.#database.query(queryUser);
-
     if (!user || user.length < 1 || user.affectedRows < 1) {
-      throw new NotFoundError('Gaal menambahkan item ke keranjang, user tidak ditemukan');
+      throw new NotFoundError('Gagal menambahkan item ke keranjang, user tidak ditemukan');
     }
 
-    const id = `item-${nanoid(16)}`;
-    const query = `INSERT INTO carts (id, productId, userId, quantity)
-        VALUES (
-          '${id}',
-          '${productId}',
-          '${userId}',
-          ${quantity}
-        )
-    `;
+    const queryProduct = `SELECT id FROM products WHERE id = '${productId}'`;
+    const product = await this.#database.query(queryProduct);
+    if (!product || product.length < 1 || product.affectedRows < 1) {
+      throw new NotFoundError('Gagal menambahkan kerankang, produk tidak ditemukan');
+    }
 
-    const result = await this.#database.query(query);
+    const queryAddAnExitingItem = `UPDATE carts 
+        SET quantity = quantity + ${quantity}
+        WHERE productId = '${productId}'
+        AND userId = '${userId}'`;
+    const addAnExitingItem = await this.#database.query(queryAddAnExitingItem);
 
-    if (!result || result.length < 1 || result.affectedRows < 1) {
-      throw new InvariantError('Gagal menambahkan item ke keranjang');
+    if (addAnExitingItem.affectedRows < 1) {
+      const id = `item-${nanoid(16)}`;
+      const query = `INSERT INTO carts (id, productId, userId, quantity)
+          VALUES (
+            '${id}',
+            '${productId}',
+            '${userId}',
+            ${quantity}
+          )
+      `;
+  
+      const result = await this.#database.query(query);
+  
+      if (!result || result.length < 1 || result.affectedRows < 1) {
+        throw new InvariantError('Gagal menambahkan item ke keranjang');
+      }
     }
   }
 
