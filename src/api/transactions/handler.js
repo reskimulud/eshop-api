@@ -47,7 +47,7 @@ class TransactionsHandler {
     let totalItem = 0;
 
     orders.forEach((order) => {
-      total += order.price;
+      total += (order.price * order.quantity);
       totalItem += order.quantity;
     });
 

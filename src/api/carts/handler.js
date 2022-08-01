@@ -36,7 +36,7 @@ class CartsHandler {
     let totalItem = 0;
 
     cart.forEach((item) => {
-      subTotal += item.price;
+      subTotal += (item.price * item.quantity);
       totalItem += item.quantity;
     });
 
