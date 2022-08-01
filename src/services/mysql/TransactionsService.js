@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
+const { imageUrlGenerator } = require('../../utils');
 
 class TransactionsService {
   #database;
@@ -105,9 +106,17 @@ class TransactionsService {
       throw new InvariantError('Transaksi gagal dimuat');
     }
 
+    const products = orders.map((product) => {
+      if (product.image !== null) {
+        product.image = imageUrlGenerator(product.image);
+      }
+
+      return product
+    });
+
     return {
       transaction,
-      orders,
+      orders: products,
     };
   }
 }

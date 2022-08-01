@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
+const { imageUrlGenerator } = require('../../utils');
 
 class CartsService {
   #database;
@@ -75,7 +76,15 @@ class CartsService {
 
     const result = await this.#database.query(query);
 
-    return result;
+    const products = result.map((product) => {
+      if (product.image !== null) {
+        product.image = imageUrlGenerator(product.image);
+      }
+
+      return product;
+    })
+
+    return products;
   }
 
   async updateCartByItemId(userId, itemId, qty) {

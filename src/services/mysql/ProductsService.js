@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
+const { imageUrlGenerator } = require('../../utils');
 
 class ProductsService {
   #database;
@@ -52,7 +53,15 @@ class ProductsService {
 
     const result = await this.#database.query(query);
 
-    return result;
+    const products = result.map((product) => {
+      if (product.image !== null) {
+        product.image = imageUrlGenerator(product.image);
+      }
+
+      return product;
+    });
+
+    return products;
   }
 
   async getProductById(id) {
@@ -64,7 +73,13 @@ class ProductsService {
       throw new NotFoundError('Produk tidak ditemukan');
     }
 
-    return result[0];
+    const product = result[0];
+
+    if (product.image !== null) {
+      product.image = imageUrlGenerator(product.image);
+    }
+
+    return product;
   }
 
   async updateProductById(id, userId, {title, price, description}) {
