@@ -27,14 +27,19 @@ class ProductsService {
     }
   }
 
-  async addProduct(userId, title, price, description) {
+  async addProduct(userId, title, price, categoryId, description) {
     await this.#verifyUserRole(userId);
-    const id = `product-${nanoid(16)}`
-    const query = `INSERT INTO products (id, title, price, description, image)
+    const id = `product-${nanoid(16)}`;
+    const createdAt = new Date().getTime();
+    const updatedAt = createdAt;
+    const query = `INSERT INTO products (id, title, price, categoryId, createdAt, updatedAt, description, image)
       VALUES (
         '${id}',
         '${title}',
         ${price},
+        '${categoryId}',
+        ${createdAt},
+        ${updatedAt},
         '${description}',
         NULL
       )`;
@@ -53,7 +58,8 @@ class ProductsService {
                       products.price, products.description,
                       products.image, categories.name as category
                     FROM products JOIN categories
-                    ON products.categoryId = categories.id`;
+                    ON products.categoryId = categories.id
+                    ORDER BY products.updatedAt DESC`;
 
     const result = await this.#database.query(query);
 
@@ -89,7 +95,7 @@ class ProductsService {
     return product;
   }
 
-  async updateProductById(id, userId, {title, price, description}) {
+  async updateProductById(id, userId, {title, price, categoryId, description}) {
     await this.#verifyUserRole(userId);
     const queryProduct = `SELECT id FROM products WHERE id = '${id}'`;
 
@@ -99,9 +105,12 @@ class ProductsService {
       throw new NotFoundError('Produk tidak ditemukan');
     }
 
+    const updatedAt = new Date().getTime();
     const query = `UPDATE products SET 
         title = '${title}',
         price = ${price},
+        categoryId = '${categoryId}',
+        updatedAt = ${updatedAt},
         description = '${description}'
       WHERE id = '${id}'`;
 

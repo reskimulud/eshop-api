@@ -25,10 +25,10 @@ class ProductsHandler {
 
   async postProduct(request, h) {
     this.#validator.validateProductsPayload(request.payload);
-    const { title, price, description } = request.payload;
+    const { title, price, categoryId, description } = request.payload;
     const { id: userId } = request.auth.credentials;
 
-    const productId = await this.#productsService.addProduct(userId, title, price, description);
+    const productId = await this.#productsService.addProduct(userId, title, price, categoryId, description);
 
     const response = h.response({
       status: 'success',
@@ -70,10 +70,10 @@ class ProductsHandler {
   async putProductById(request, h) {
     this.#validator.validateProductsPayload(request.payload);
     const { id } = request.params;
-    const { title, price, description } = request.payload;
+    const { title, price, categoryId, description } = request.payload;
     const { id: userId } = request.auth.credentials;
 
-    await this.#productsService.updateProductById(id, userId, { title, price, description });
+    await this.#productsService.updateProductById(id, userId, { title, price, categoryId, description });
 
     return {
       status: 'success',

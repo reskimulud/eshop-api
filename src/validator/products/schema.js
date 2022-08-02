@@ -3,6 +3,7 @@ const Joi = require('joi');
 const ProductsPayloadSchema = Joi.object({
   title: Joi.string().required(),
   price: Joi.number().required(),
+  categoryId: Joi.string().required(),
   description: Joi.string().allow('', null),
 });
 
