@@ -49,7 +49,11 @@ class ProductsService {
   }
 
   async getAllProducts() {
-    const query = 'SELECT * FROM products';
+    const query = `SELECT products.id, products.title,
+                      products.price, products.description,
+                      products.image, categories.name as category
+                    FROM products JOIN categories
+                    ON products.categoryId = categories.id`;
 
     const result = await this.#database.query(query);
 
@@ -65,7 +69,10 @@ class ProductsService {
   }
 
   async getProductById(id) {
-    const query = `SELECT * FROM products WHERE id = '${id}'`;
+    const query = `SELECT products.*, categories.name as category
+                    FROM products JOIN categories
+                    ON products.categoryId = categories.id
+                    WHERE products.id = '${id}'`;
 
     const result = await this.#database.query(query);
 
