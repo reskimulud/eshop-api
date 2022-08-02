@@ -145,12 +145,14 @@ class ProductsHandler {
   async getProductsByCategoryId(request, h) {
     const { id } = request.params;
 
-    const products = await this.#productsService.getProductsByCategoryId(id);
+    const { categoryName, products } = await this.#productsService.getProductsByCategoryId(id);
 
     return {
       status: 'success',
       message: 'Data produk berhasil diambil',
       data: {
+        categoryName,
+        countItem: products.length,
         products,
       },
     };

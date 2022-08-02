@@ -182,7 +182,7 @@ class ProductsService {
   }
 
   async getProductsByCategoryId(categoryId) {
-    const queryCategory = `SELECT id FROM categories WHERE id = '${categoryId}'`
+    const queryCategory = `SELECT name FROM categories WHERE id = '${categoryId}'`
     const category = await this.#database.query(queryCategory);
     if (!category || category.length < 1) {
       throw new NotFoundError('Gagal mengambil data, kategori tidak ditemukan');
@@ -195,7 +195,10 @@ class ProductsService {
                     ON products.categoryId = categories.id
                     WHERE products.categoryId = '${categoryId}'`;
 
-    return await this.#database.query(query);
+    const products = await this.#database.query(query);
+    const categoryName = category[0].name;
+
+    return { categoryName, products };
   }
 
   async updateCategoryById(id, name, userId) {
