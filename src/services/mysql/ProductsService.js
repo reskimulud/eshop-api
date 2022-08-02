@@ -165,6 +165,23 @@ class ProductsService {
     return result;
   }
 
+  async getProductsByCategoryId(categoryId) {
+    const queryCategory = `SELECT id FROM categories WHERE id = '${categoryId}'`
+    const category = await this.#database.query(queryCategory);
+    if (!category || category.length < 1) {
+      throw new NotFoundError('Gagal mengambil data, kategori tidak ditemukan');
+    }
+
+    const query = `SELECT products.id, products.title,
+                      products.price, products.description,
+                      products.image, categories.name as category
+                    FROM products JOIN categories
+                    ON products.categoryId = categories.id
+                    WHERE products.categoryId = '${categoryId}'`;
+
+    return await this.#database.query(query);
+  }
+
   async updateCategoryById(id, name, userId) {
     await this.#verifyUserRole(userId);
     const query = `UPDATE categories

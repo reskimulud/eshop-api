@@ -72,6 +72,11 @@ const routes = (handler) => [
     handler: handler.getCategories,
   },
   {
+    method: 'GET',
+    path: '/products/categories/{id}',
+    handler: handler.getProductsByCategoryId,
+  },
+  {
     method: 'PUT',
     path: '/products/categories/{id}',
     handler: handler.putCategoryById,

@@ -18,6 +18,7 @@ class ProductsHandler {
     this.putProductImageById = this.putProductImageById.bind(this);
     this.postCategory = this.postCategory.bind(this);
     this.getCategories = this.getCategories.bind(this);
+    this.getProductsByCategoryId = this.getProductsByCategoryId.bind(this);
     this.putCategoryById = this.putCategoryById.bind(this);
     this.deleteCategoryById = this.deleteCategoryById.bind(this);
   }
@@ -138,6 +139,20 @@ class ProductsHandler {
       data: {
         categories,
       }
+    };
+  }
+
+  async getProductsByCategoryId(request, h) {
+    const { id } = request.params;
+
+    const products = await this.#productsService.getProductsByCategoryId(id);
+
+    return {
+      status: 'success',
+      message: 'Data produk berhasil diambil',
+      data: {
+        products,
+      },
     };
   }
 
