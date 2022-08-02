@@ -123,12 +123,16 @@ class ProductsService {
 
   async deleteProductById(id, userId) {
     await this.#verifyUserRole(userId);
-    const query = `DELETE FROM products WHERE id = '${id}'`;
+    try {
+      const query = `DELETE FROM products WHERE id = '${id}'`;
 
-    const result = await this.#database.query(query);
+      const result = await this.#database.query(query);
 
-    if (!result || result.length < 1 || result.affectedRows < 1) {
-      throw new NotFoundError('Gagal menghapus produk, id tidak ditemukan');
+      if (!result || result.length < 1 || result.affectedRows < 1) {
+        throw new NotFoundError('Gagal menghapus produk, id tidak ditemukan');
+      }
+    } catch (err) {
+      throw new InvariantError('Tidak dapat menghapus produk');
     }
   }
 
