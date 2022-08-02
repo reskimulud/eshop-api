@@ -16,6 +16,10 @@ class ProductsHandler {
     this.putProductById = this.putProductById.bind(this);
     this.deleteProductById = this.deleteProductById.bind(this);
     this.putProductImageById = this.putProductImageById.bind(this);
+    this.postCategory = this.postCategory.bind(this);
+    this.getCategories = this.getCategories.bind(this);
+    this.putCategoryById = this.putCategoryById.bind(this);
+    this.deleteCategoryById = this.deleteCategoryById.bind(this);
   }
 
   async postProduct(request, h) {
@@ -104,6 +108,62 @@ class ProductsHandler {
     return {
       status: 'success',
       message: 'Gambar produk berhasil diperbarui',
+    };
+  }
+
+  async postCategory(request, h) {
+    this.#validator.validateProductCategoriesPayload
+    const { id: userId } = request.auth.credentials;
+    const { name } = request.payload;
+
+    const categoryId = await this.#productsService.addCategory(name, userId);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Kategori berhasil ditambahkan',
+      data: {
+        categoryId,
+      },
+    });
+    response.code(201);
+    return response;
+  }
+
+  async getCategories(request, h) {
+    const categories = await this.#productsService.getCategories();
+
+    return {
+      status: 'success',
+      message: 'Data kategori berhasil diambil',
+      data: {
+        categories,
+      }
+    };
+  }
+
+  async putCategoryById(request, h) {
+    this.#validator.validateProductCategoriesPayload(request.payload);
+    const { id } = request.params;
+    const { name } = request.payload;
+    const { id: userId } = request.auth.credentials;
+
+    await this.#productsService.updateCategoryById(id, name, userId);
+
+    return {
+      status: 'success',
+      message: 'Data kategori berhasil diperbarui'
+    };
+  }
+
+  async deleteCategoryById(request, h) {
+    const { id } = request.params;
+    const { id: userId } = request.auth.credentials;
+
+    await this.#productsService.deleteCategoryById(id, userId);
+
+    return {
+      status: 'success',
+      message: 'Data kategori berhasil dihapus',
     };
   }
 }

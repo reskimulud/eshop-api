@@ -58,6 +58,35 @@ const routes = (handler) => [
       },
     },
   },
+  {
+    method: 'POST',
+    path: '/products/categories',
+    handler: handler.postCategory,
+    options: {
+      auth: 'eshop_jwt',
+    },
+  },
+  {
+    method: 'GET',
+    path: '/products/categories',
+    handler: handler.getCategories,
+  },
+  {
+    method: 'PUT',
+    path: '/products/categories/{id}',
+    handler: handler.putCategoryById,
+    options: {
+      auth: 'eshop_jwt',
+    },
+  },
+  {
+    method: 'DELETE',
+    path: '/products/categories/{id}',
+    handler: handler.deleteCategoryById,
+    options: {
+      auth: 'eshop_jwt',
+    },
+  },
 ];
 
 module.exports = routes;

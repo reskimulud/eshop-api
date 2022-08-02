@@ -16,4 +16,8 @@ const ProductImageHeaderSchema = Joi.object({
       'image/webp').required(),
 }).unknown();
 
-module.exports = { ProductsPayloadSchema, ProductImageHeaderSchema };
+const ProductCategoriesPayloadSchema = Joi.object({
+  name: Joi.string().required(),
+});
+
+module.exports = { ProductsPayloadSchema, ProductImageHeaderSchema, ProductCategoriesPayloadSchema };

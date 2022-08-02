@@ -139,6 +139,55 @@ class ProductsService {
 
     return oldFileName[0].image;
   }
+
+  async addCategory(name, userId) {
+    await this.#verifyUserRole(userId);
+    const id = `category-${nanoid(16)}`;
+    const query = `INSERT INTO categories VALUES (
+        '${id}',
+        '${name}'
+    )`
+
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1 || result.affectedRows < 1) {
+      throw new InvariantError('Gagal menambahkan kategori');
+    }
+
+    return id;
+  }
+
+  async getCategories() {
+    const query = 'SELECT * FROM categories ORDER BY name ASC';
+
+    const result = await this.#database.query(query);
+
+    return result;
+  }
+
+  async updateCategoryById(id, name, userId) {
+    await this.#verifyUserRole(userId);
+    const query = `UPDATE categories
+        SET name = '${name}'
+        WHERE id = '${id}'`;
+
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1 || result.affectedRows < 1) {
+      throw new NotFoundError('Gagal memperbarui, kategori tidak ditemukan');
+    }
+  }
+
+  async deleteCategoryById(id, userId) {
+    await this.#verifyUserRole(userId);
+    const query = `DELETE FROM categories WHERE id = '${id}'`;
+
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1 || result.affectedRows < 1) {
+      throw new NotFoundError('Gagal menghapus, kategori tidak ditemukan');
+    }
+  }
 }
 
 module.exports = ProductsService;
