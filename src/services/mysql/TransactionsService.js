@@ -50,8 +50,8 @@ class TransactionsService {
     const queryTransaction = `INSERT INTO transactions (id, userId, dateCreated) VALUES (
       '${transactionId}',
       '${userId}',
-      '${new Date().toLocaleString()}'
-    )`;
+      ${new Date().getTime()}
+)`;
     const transaction = await this.#database.query(queryTransaction);
 
     if (!transaction || transaction.length < 1 || transaction.affectedRows < 1) {
