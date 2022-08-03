@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/github/license/reskimulud/eshop-api?logo=github)&nbsp;
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?logo=javascript&logoColor=%23F7DF1E)&nbsp;
 ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?logo=node.js&logoColor=white)&nbsp;
-![CodeFactor](https://www.codefactor.io/repository/github/reskimulud/eshop-api/badge)&nbsp;
+![codefactor grade](https://img.shields.io/codefactor/grade/github/reskimulud/eshop-api/main?label=codefactor%20grade&logo=codefactor)&nbsp;
 
 eShop is a RESTful API service created using the JavaScript programming language with NodeJs and HapiJs as a framework to create the API.
 
