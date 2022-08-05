@@ -4,7 +4,7 @@ const ProductsPayloadSchema = Joi.object({
   title: Joi.string().required(),
   price: Joi.number().required(),
   categoryId: Joi.string().required(),
-  description: Joi.string().allow('', null),
+  description: Joi.string().allow('', null).required(),
 });
 
 const ProductImageHeaderSchema = Joi.object({
@@ -23,7 +23,7 @@ const ProductCategoriesPayloadSchema = Joi.object({
 
 const ProductRatingsPayloadSchema = Joi.object({
   rate: Joi.number().min(1).max(5).required(),
-  review: Joi.string().allow('', null),
+  review: Joi.string().allow('', null).required(),
 });
 
 module.exports = { 

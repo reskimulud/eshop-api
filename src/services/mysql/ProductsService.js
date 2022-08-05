@@ -27,6 +27,26 @@ class ProductsService {
     }
   }
 
+  async #getRattingsByProductId(productId) {
+    const query = `SELECT rate FROM ratings WHERE productId = '${productId}'`;
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1) {
+      return { rate: 0, count: 0 }
+    }
+
+    const count = result.length;
+    let sumRate = 0;
+
+    result.forEach((rating) => {
+      sumRate += rating.rate;
+    });
+
+    const rate = sumRate/count;
+
+    return {rate, count};
+  }
+
   async addProduct(userId, title, price, categoryId, description) {
     await this.#verifyUserRole(userId);
     const id = `product-${nanoid(16)}`;
@@ -63,13 +83,15 @@ class ProductsService {
 
     const result = await this.#database.query(query);
 
-    const products = result.map((product) => {
+    const products = await Promise.all(result.map(async (product) => {
       if (product.image !== null) {
         product.image = imageUrlGenerator(product.image);
       }
 
+      product.rating = await this.#getRattingsByProductId(product.id);
+
       return product;
-    });
+    }));
 
     return products;
   }
@@ -91,6 +113,17 @@ class ProductsService {
     if (product.image !== null) {
       product.image = imageUrlGenerator(product.image);
     }
+
+    const rating = await this.#getRattingsByProductId(product.id);
+    product.rating = rating;
+
+    const queryReview = `SELECT users.name AS user, ratings.rate, ratings.review
+                          FROM users JOIN ratings
+                          ON ratings.userId = users.id
+                          WHERE ratings.productId = '${product.id}'
+    `;
+    const reviews = await this.#database.query(queryReview);
+    product.reviews = reviews;
 
     return product;
   }
