@@ -31,6 +31,23 @@ class TransactionsService {
     return result[0];
   }
 
+  async #getRatingAndReview(userId, productId) {
+    const query = `SELECT rate, review FROM ratings
+                    WHERE userId = '${userId}'
+                    AND productId = '${productId}'
+    `;
+
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1) {
+      return {yourRate: 0, yourReview: null};
+    }
+
+    const rating = result[0];
+
+    return {yourRate: rating.rate, yourReview: rating.review};
+  }
+
   async addCheckout(userId) {
     const queryUser = `SELECT id FROM users WHERE id = '${userId}'`;
     const user = await this.#database.query(queryUser);
@@ -92,7 +109,7 @@ class TransactionsService {
     const transaction = await this.#verifyTransactionOwner(userId, transactionId);
 
     const query = `
-      SELECT products.title, products.price, products.image,
+      SELECT products.id, products.title, products.price, products.image,
         orders.quantity
       FROM orders JOIN products
       ON orders.productId = products.id
@@ -106,13 +123,18 @@ class TransactionsService {
       throw new InvariantError('Transaksi gagal dimuat');
     }
 
-    const products = orders.map((product) => {
+    const products = await Promise.all(orders.map(async (product) => {
       if (product.image !== null) {
         product.image = imageUrlGenerator(product.image);
       }
 
-      return product
-    });
+      const rating = await this.#getRatingAndReview(userId, product.id);
+
+      product.yourRate = rating.yourRate;
+      product.yourReview = rating.yourReview;
+
+      return product;
+    }));
 
     return {
       transaction,
