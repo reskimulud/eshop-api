@@ -16,5 +16,6 @@ eShop is an API for online shop services that has fairly complete basic features
 * Retrieve and modify product data
 * Add product to cart
 * Checkout
+* Ratings and Reviews
 
 This API is used for learning, created under the [MIT License](LICENSE)
