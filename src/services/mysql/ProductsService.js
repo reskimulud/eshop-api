@@ -228,6 +228,35 @@ class ProductsService {
       throw new NotFoundError('Gagal menghapus, kategori tidak ditemukan');
     }
   }
+
+  async addProductRating(userId, productId, rate, review) {
+    const queryProduct = `SELECT id FROM products WHERE id = '${productId}'`;
+    const product = await this.#database.query(queryProduct);
+    if (!product || product.length < 1) {
+      throw new NotFoundError('Gagal menambahkan ulasan, produk tidak ditemukan');
+    }
+
+    const queryExitingRating = `SELECT id FROM ratings WHERE userId = '${userId}' AND productId = '${productId}'`;
+    const exitingRating = await this.#database.query(queryExitingRating);
+    if (exitingRating.length > 0) {
+      throw new InvariantError('Rating hanya bisa dibuat sekali');
+    }
+
+    const id = `rating-${nanoid(16)}`;
+    const query = `INSERT INTO ratings (id, userId, productId, rate, review)
+                    VALUES (
+                      '${id}',
+                      '${userId}',
+                      '${productId}',
+                      ${rate},
+                      '${review}'
+                    )`;
+    const result = await this.#database.query(query);
+
+    if (!result || result.length < 1 || result.affectedRows < 1) {
+      throw new InvariantError('Gagal menambahkan ulasan');
+    }
+  }
 }
 
 module.exports = ProductsService;

@@ -1,5 +1,5 @@
 const InvariantError = require('../../exceptions/InvariantError');
-const { ProductsPayloadSchema, ProductImageHeaderSchema, ProductCategoriesPayloadSchema } = require('./schema');
+const { ProductsPayloadSchema, ProductImageHeaderSchema, ProductCategoriesPayloadSchema, ProductRatingsPayloadSchema } = require('./schema');
 
 const ProductsValidator = {
   validateProductsPayload: (payload) => {
@@ -16,6 +16,12 @@ const ProductsValidator = {
   },
   validateProductCategoriesPayload: (payload) => {
     const validationResult = ProductCategoriesPayloadSchema.validate(payload);
+    if (validationResult.error) {
+      throw new InvariantError(validationResult.error.message);
+    }
+  },
+  validateProductRatingsPayload: (payload) => {
+    const validationResult = ProductRatingsPayloadSchema.validate(payload);
     if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);
     }

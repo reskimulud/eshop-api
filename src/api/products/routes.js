@@ -92,6 +92,14 @@ const routes = (handler) => [
       auth: 'eshop_jwt',
     },
   },
+  {
+    method: 'POST',
+    path: '/products/{id}/rating',
+    handler: handler.postProductRatingById,
+    options: {
+      auth: 'eshop_jwt',
+    },
+  },
 ];
 
 module.exports = routes;

@@ -21,4 +21,14 @@ const ProductCategoriesPayloadSchema = Joi.object({
   name: Joi.string().required(),
 });
 
-module.exports = { ProductsPayloadSchema, ProductImageHeaderSchema, ProductCategoriesPayloadSchema };
+const ProductRatingsPayloadSchema = Joi.object({
+  rate: Joi.number().min(1).max(5).required(),
+  review: Joi.string().allow('', null),
+});
+
+module.exports = { 
+  ProductsPayloadSchema,
+  ProductImageHeaderSchema,
+  ProductCategoriesPayloadSchema,
+  ProductRatingsPayloadSchema,
+};

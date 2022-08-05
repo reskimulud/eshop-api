@@ -21,6 +21,7 @@ class ProductsHandler {
     this.getProductsByCategoryId = this.getProductsByCategoryId.bind(this);
     this.putCategoryById = this.putCategoryById.bind(this);
     this.deleteCategoryById = this.deleteCategoryById.bind(this);
+    this.postProductRatingById = this.postProductRatingById.bind(this);
   }
 
   async postProduct(request, h) {
@@ -182,6 +183,22 @@ class ProductsHandler {
       status: 'success',
       message: 'Data kategori berhasil dihapus',
     };
+  }
+
+  async postProductRatingById(request, h) {
+    this.#validator.validateProductRatingsPayload(request.payload);
+    const { id: productId } = request.params;
+    const { id: userId } = request.auth.credentials;
+    const { rate, review } = request.payload;
+
+    await this.#productsService.addProductRating(userId, productId, rate, review);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Ulasan berhasil ditambahkan',
+    });
+    response.code(201);
+    return response;
   }
 }
 
