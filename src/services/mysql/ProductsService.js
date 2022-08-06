@@ -73,13 +73,15 @@ class ProductsService {
     return id;
   }
 
-  async getAllProducts() {
+  async getAllProducts(page = 1, size = 10) {
+    const offset = (page <= 1) ? 0 : (page - 1) * size;
     const query = `SELECT products.id, products.title,
                       products.price, products.description,
                       products.image, categories.name as category
                     FROM products JOIN categories
                     ON products.categoryId = categories.id
-                    ORDER BY products.updatedAt DESC`;
+                    ORDER BY products.updatedAt DESC
+                    LIMIT ${offset}, ${size}`;
 
     const result = await this.#database.query(query);
 

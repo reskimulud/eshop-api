@@ -26,9 +26,15 @@ const ProductRatingsPayloadSchema = Joi.object({
   review: Joi.string().allow('', null).required(),
 });
 
+const ProductPaginationQuerySchema = Joi.object({
+  page: Joi.number().default(1),
+  size: Joi.number().default(10)
+});
+
 module.exports = { 
   ProductsPayloadSchema,
   ProductImageHeaderSchema,
   ProductCategoriesPayloadSchema,
   ProductRatingsPayloadSchema,
+  ProductPaginationQuerySchema,
 };
