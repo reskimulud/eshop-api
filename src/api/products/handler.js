@@ -43,9 +43,9 @@ class ProductsHandler {
   }
 
   async getProducts(request, h) {
-    this.#validator.validateProductPaginationQuery(request.query);
-    const { page, size } = request.query;
-    const products = await this.#productsService.getAllProducts(page, size);
+    this.#validator.validateProductQuery(request.query);
+    const { page, size, s } = request.query;
+    const products = await this.#productsService.getAllProducts(page, size, s);
 
     return {
       status: 'success',
