@@ -55,8 +55,8 @@ class TransactionsHandler {
       status: 'success',
       message: 'Data transaksi berhasil diambil',
       data: {
+		id,
         userId,
-        transactionId: id,
         dateCreated: transaction.dateCreated,
         totalItem,
         total,
