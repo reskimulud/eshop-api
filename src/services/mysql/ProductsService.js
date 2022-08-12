@@ -55,12 +55,12 @@ class ProductsService {
     const query = `INSERT INTO products (id, title, price, categoryId, createdAt, updatedAt, description, image)
       VALUES (
         '${id}',
-        '${title}',
+        "${title}",
         ${price},
         '${categoryId}',
         ${createdAt},
         ${updatedAt},
-        '${description}',
+        "${description}",
         NULL
       )`;
 
@@ -147,11 +147,11 @@ class ProductsService {
 
     const updatedAt = new Date().getTime();
     const query = `UPDATE products SET 
-        title = '${title}',
+        title = "${title}",
         price = ${price},
         categoryId = '${categoryId}',
         updatedAt = ${updatedAt},
-        description = '${description}'
+        description = "${description}"
       WHERE id = '${id}'`;
 
     const result = await this.#database.query(query);
@@ -205,7 +205,7 @@ class ProductsService {
     const id = `category-${nanoid(16)}`;
     const query = `INSERT INTO categories VALUES (
         '${id}',
-        '${name}'
+        "${name}"
     )`
 
     const result = await this.#database.query(query);
@@ -248,7 +248,7 @@ class ProductsService {
   async updateCategoryById(id, name, userId) {
     await this.#verifyUserRole(userId);
     const query = `UPDATE categories
-        SET name = '${name}'
+        SET name = "${name}"
         WHERE id = '${id}'`;
 
     const result = await this.#database.query(query);
@@ -289,7 +289,7 @@ class ProductsService {
                       '${userId}',
                       '${productId}',
                       ${rate},
-                      '${review}'
+                      "${review}"
                     )`;
     const result = await this.#database.query(query);
 
