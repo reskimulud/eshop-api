@@ -50,9 +50,7 @@ class ProductsHandler {
     return {
       status: 'success',
       message: 'Data produk berhasil diambil',
-      data: {
-        products,
-      }
+      data: products,
     };
   }
 
@@ -64,9 +62,7 @@ class ProductsHandler {
     return {
       status: 'success',
       message: 'Data produk berhasil diambil',
-      data: {
-        product,
-      },
+      data: product,
     };
   }
 
@@ -139,9 +135,7 @@ class ProductsHandler {
     return {
       status: 'success',
       message: 'Data kategori berhasil diambil',
-      data: {
-        categories,
-      }
+      data: categories,
     };
   }
 

@@ -32,9 +32,7 @@ class TransactionsHandler {
     return {
       status: 'success',
       message: 'Data transaksi berhasil diambil',
-      data: {
-        transactions,
-      },
+      data: transactions,
     };
   }
 
