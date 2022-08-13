@@ -140,6 +140,7 @@ class ProductsHandler {
   }
 
   async getProductsByCategoryId(request, h) {
+    this.#validator.validateProductQuery(request.query);
     const { id } = request.params;
     const { page, size, s } = request.query;
     const { categoryName, products } = await this.#productsService.getProductsByCategoryId(id, page, size, s);

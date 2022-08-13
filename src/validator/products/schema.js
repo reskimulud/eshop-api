@@ -27,9 +27,9 @@ const ProductRatingsPayloadSchema = Joi.object({
 });
 
 const ProductQuerySchema = Joi.object({
-  page: Joi.number().default(1),
-  size: Joi.number().default(10),
-  s: Joi.string(),
+  page: Joi.number().default(1).allow('', null),
+  size: Joi.number().default(10).allow('', null),
+  s: Joi.string().allow('', null),
 });
 
 module.exports = { 
