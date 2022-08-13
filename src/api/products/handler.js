@@ -141,8 +141,8 @@ class ProductsHandler {
 
   async getProductsByCategoryId(request, h) {
     const { id } = request.params;
-
-    const { categoryName, products } = await this.#productsService.getProductsByCategoryId(id);
+    const { page, size, s } = request.query;
+    const { categoryName, products } = await this.#productsService.getProductsByCategoryId(id, page, size, s);
 
     return {
       status: 'success',

@@ -225,19 +225,27 @@ class ProductsService {
     return result;
   }
 
-  async getProductsByCategoryId(categoryId) {
+  async getProductsByCategoryId(categoryId, page = 1, size = 10, search = null) {
+    const offset = (page <= 1) ? 0 : (page - 1) * size;
     const queryCategory = `SELECT name FROM categories WHERE id = '${categoryId}'`
     const category = await this.#database.query(queryCategory);
     if (!category || category.length < 1) {
       throw new NotFoundError('Gagal mengambil data, kategori tidak ditemukan');
     }
 
-    const query = `SELECT products.id, products.title,
+    let query = `SELECT products.id, products.title,
                       products.price, products.description,
                       products.image, categories.name as category
                     FROM products JOIN categories
                     ON products.categoryId = categories.id
                     WHERE products.categoryId = '${categoryId}'`;
+
+    if (search !== null) {
+      query += ` AND products.title LIKE '%${search}%'
+          OR products.description LIKE '%${search}%'`
+    }
+
+    query += ` ORDER BY products.updatedAt DESC LIMIT ${offset}, ${size}`
 
     const products = await this.#database.query(query);
     const categoryName = category[0].name;
