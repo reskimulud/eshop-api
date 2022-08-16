@@ -98,7 +98,7 @@ class TransactionsService {
   }
 
   async getTransactionsByUserId(userId) {
-    const query = `SELECT id, dateCreated FROM transactions WHERE userId = '${userId}'`;
+    const query = `SELECT id, dateCreated FROM transactions WHERE userId = '${userId}' ORDER BY dateCreated DESC`;
 
     const result = await this.#database.query(query);
 
