@@ -61,9 +61,7 @@ class AuthenticationHandler {
     return {
       status: 'success',
       message: 'Data user berhasil diambil',
-      data: {
-        user,
-      },
+      data: user,
     };
   }
 
