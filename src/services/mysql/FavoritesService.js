@@ -21,23 +21,41 @@ class FavoritesService {
   }
 
   async addFavoriteProduct(userId, productId) {
+
+    const queryIsExiting = `
+        SELECT id FROM favorites
+          WHERE productId = '${productId}'
+          AND userId = '${userId}'
+      `;
+
+    const resultExiting = await this.#database.query(queryIsExiting);
+
+    if (resultExiting.length > 0) {
+      throw new InvariantError('Produk hanya bisa ditambahkan sekali ke favorit');
+    }
+
     const id = `favorite-${nanoid(16)}`;
 
     const query = `
-        INSERT INTO favorites (id, userId, favoriteId)
+        INSERT INTO favorites (id, productId, userId)
         VALUES (
-          userId = '${userId}',
-          productId = '${productId}'
+          '${id}',
+          '${productId}',
+          '${userId}'
         )
       `;
 
-    const result = await this.#database.query(query);
+    try {
+      const result = await this.#database.query(query);
 
-    if (!result || result.length < 1 || result.affectedRows  < 1) {
-      throw new InvariantError('Gagal menambahkan produk ke favorite');
+      if (!result || result.length < 1 || result.affectedRows  < 1) {
+        throw new InvariantError('Gagal menambahkan produk ke favorite');
+      }
+
+      return id;
+    } catch (err) {
+      throw new InvariantError('Produk tidak ditemukan')
     }
-
-    return id;
   }
 }
 

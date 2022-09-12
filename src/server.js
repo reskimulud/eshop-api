@@ -28,8 +28,11 @@ const TransactionsService = require('./services/mysql/TransactionsService');
 
 // storage
 const StorageService = require('./services/storage/StorageService');
+
+// favorites
 const FavoritesService = require('./services/mysql/FavoritesService');
 const favorite = require('./api/favorite');
+const FavoritesValidator = require('./validator/favorites');
 
 const init = async () => {
 
@@ -117,6 +120,7 @@ const init = async () => {
       plugin: favorite,
       options: {
         service: favoriteService,
+        validator: FavoritesValidator,
       },
     },
   ]);

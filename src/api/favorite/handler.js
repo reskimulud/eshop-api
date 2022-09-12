@@ -1,10 +1,10 @@
 class FavoritesHandler {
   #service;
-  // #validator;
+  #validator;
 
-  constructor(service) {
+  constructor(service, validator) {
     this.#service = service;
-    // this.#validator = validator;
+    this.#validator = validator;
 
     this.getFavoriteProducts = this.getFavoriteProducts.bind(this);
     this.postFavoriteProduct = this.postFavoriteProduct.bind(this);
@@ -23,7 +23,23 @@ class FavoritesHandler {
     };
   }
 
-  async postFavoriteProduct(request, h) {}
+  async postFavoriteProduct(request, h) {
+    this.#validator.validateFavoriteProductsPayload(request.payload);
+    const { id: userId } = request.auth.credentials;
+    const { productId } = request.payload;
+
+    const favoriteId = await this.#service.addFavoriteProduct(userId, productId);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Produk berhasil ditambahkan ke favorit',
+      data: {
+        favoriteId,
+      }
+    });
+    response.code(201);
+    return response;
+  }
 
   async deleteFavoriteProductById(request, h) {}
 }
