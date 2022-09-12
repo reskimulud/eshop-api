@@ -28,6 +28,8 @@ const TransactionsService = require('./services/mysql/TransactionsService');
 
 // storage
 const StorageService = require('./services/storage/StorageService');
+const FavoritesService = require('./services/mysql/FavoritesService');
+const favorite = require('./api/favorite');
 
 const init = async () => {
 
@@ -37,6 +39,7 @@ const init = async () => {
   const cartsService = new CartsService(database);
   const transactionsService = new TransactionsService(database);
   const storageService = new StorageService(path.resolve(__dirname, 'api/products/images'));
+  const favoriteService = new FavoritesService(database);
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -110,6 +113,10 @@ const init = async () => {
       plugin: transactions,
       options: {
         service: transactionsService,
+      },
+      plugin: favorite,
+      options: {
+        service: favoriteService,
       },
     },
   ]);
